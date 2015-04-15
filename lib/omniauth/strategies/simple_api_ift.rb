@@ -8,26 +8,26 @@ module OmniAuth
       option :client_options, {
         site: 'https://api.simple-api.com:443',
         authorize_url: '/auth/vendor',
+        customer_info_url: '/auth/customer',
         member_info_url: '/directapi',
-        user_info_url: '/customers',
         auth_token: 'MUST BE SET'
       }
 
       option :name, 'simple_api_ift'
 
-      uid { raw_info['customerId'] }
+      uid { raw_customer_info['customerId'] }
 
       info do
         {
-          first_name: raw_info['firstName'],
-          last_name: raw_info['lastName'],
-          email: raw_info['primaryEmail'],
+          first_name: raw_member_info.xpath('//FirstName', force_encoding: 'UTF-16').children.text,
+          last_name: raw_member_info.xpath('//LastName', force_encoding: 'UTF-16').children.text,
+          email: raw_member_info.xpath('//Email', force_encoding: 'UTF-16').children.text,
           member_status: raw_member_info.xpath('//MemberStatus', force_encoding: 'UTF-16').children.text
         }
       end
 
       extra do
-        { :raw_info => raw_info }
+        { :raw_info => raw_member_info }
       end
 
       def creds
@@ -63,8 +63,8 @@ module OmniAuth
         hash
       end
 
-      def raw_info
-        @raw_info ||= get_user_info(customer_token)
+      def raw_customer_info
+        @raw_customer_info ||= get_customer_info(customer_token)
       end
 
       def raw_member_info
@@ -72,11 +72,11 @@ module OmniAuth
       end
 
       def customer_id
-        raw_info['customerId'].split('|').first
+        raw_customer_info['customerId'].split('|').first
       end
 
       def sub_customer_id
-        raw_info['customerId'].split('|').last
+        raw_customer_info['customerId'].split('|').last
       end
 
       private
@@ -135,23 +135,24 @@ module OmniAuth
         end
       end
 
-      def get_user_info(customer_token)
-        response = Typhoeus.get(user_info_url + "?token=#{customer_token}",
+      def get_customer_info(customer_token)
+        response = Typhoeus.get(customer_info_url + "?token=#{customer_token}",
           headers: { Authorization: "Basic #{auth_token}" })
 
         if response.success?
-          JSON.parse(response.body)['data']['customers'].first
+          Rails.logger.debug JSON.parse(response.body)
+          JSON.parse(response.body)['data']
         else
           nil
         end
       end
 
-      def member_info_url
-        "#{options.client_options.site}#{options.client_options.member_info_url}"
+      def customer_info_url
+        "#{options.client_options.site}#{options.client_options.customer_info_url}"
       end
 
-      def user_info_url
-        "#{options.client_options.site}#{options.client_options.user_info_url}"
+      def member_info_url
+        "#{options.client_options.site}#{options.client_options.member_info_url}"
       end
     end
   end
