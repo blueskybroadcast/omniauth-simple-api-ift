@@ -3,7 +3,7 @@ require 'builder'
 
 module OmniAuth
   module Strategies
-    class SimpleApi < OmniAuth::Strategies::OAuth2
+    class SimpleApiIft < OmniAuth::Strategies::OAuth2
 
       option :client_options, {
         site: 'https://api.simple-api.com:443',
@@ -13,7 +13,7 @@ module OmniAuth
         auth_token: 'MUST BE SET'
       }
 
-      option :name, 'simple_api'
+      option :name, 'simple_api_ift'
 
       uid { raw_info['customerId'] }
 

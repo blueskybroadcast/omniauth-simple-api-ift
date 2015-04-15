@@ -1,5 +1,5 @@
 module Omniauth
-  module SimpleApi
+  module SimpleApiIft
     VERSION = "0.0.1"
   end
 end

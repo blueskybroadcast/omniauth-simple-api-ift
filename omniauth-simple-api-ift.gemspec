@@ -1,15 +1,15 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'omniauth-simple-api/version'
+require 'omniauth-simple-api-ift/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "omniauth-simple-api"
-  spec.version       = Omniauth::SimpleApi::VERSION
-  spec.authors       = ["Eugene Correia"]
-  spec.email         = ["ecorreia@blueskybroadcast.com"]
-  spec.summary       = %q{SimpleApi Omniauth Gem}
-  spec.description   = %q{SimpleApi Ominauth gem using oauth2 specs}
+  spec.name          = "omniauth-simple-api-ift"
+  spec.version       = Omniauth::SimpleApiIft::VERSION
+  spec.authors       = ["Timm Liu"]
+  spec.email         = ["tliu@blueskybroadcast.com"]
+  spec.summary       = %q{SimpleApiIft Omniauth Gem}
+  spec.description   = %q{SimpleApiIft Ominauth gem using oauth2 specs}
   spec.homepage      = ""
   spec.license       = "MIT"
 
