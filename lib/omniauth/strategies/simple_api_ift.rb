@@ -95,6 +95,7 @@ module OmniAuth
         response = Typhoeus.get(auth_url + "?return=#{callback_url}",
           headers: { Authorization: "Basic #{auth_token}" }
         )
+        log_request_details(__callee__, response)
 
         if response.success?
           JSON.parse(response.body)
@@ -126,6 +127,7 @@ module OmniAuth
             body: build_member_xml
           }
         )
+        log_request_details(__callee__, response)
 
         if response.success?
           member_data = JSON.parse(response.body)['data']['data']
@@ -138,6 +140,7 @@ module OmniAuth
       def get_customer_info(customer_token)
         response = Typhoeus.get(customer_info_url + "?token=#{customer_token}",
           headers: { Authorization: "Basic #{auth_token}" })
+        log_request_details(__callee__, response)
 
         if response.success?
           Rails.logger.debug JSON.parse(response.body)
@@ -149,6 +152,14 @@ module OmniAuth
 
       def customer_info_url
         "#{options.client_options.site}#{options.client_options.customer_info_url}"
+      end
+
+      def log_request_details(callee, response)
+        Rails.logger.info "%% #{options.name} #{callee.to_s}:: "\
+          "date: #{response.headers['date']}; "\
+          "server: #{response.headers['server']}; "\
+          "request-id: #{response.headers['request-id']}; "\
+          "response-time: #{response.headers['response-time']}; %%"
       end
 
       def member_info_url
